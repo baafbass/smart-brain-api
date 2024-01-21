@@ -1,6 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
+import bcrypt from 'bcrypt';
+const saltRounds = 10;
+
 const app = express()
 
 app.use(bodyParser.json());
@@ -11,7 +14,6 @@ const database = {
       	id: '123',
       	name: 'farid',
       	email: 'farid@gmail.com',
-      	password: 'bass1971',
       	entries: 0,
       	joined: new Date()
       },
@@ -19,9 +21,15 @@ const database = {
       	id: '124',
       	name: 'Top G',
       	email: 'topg@gmail.com',
-      	password: 'junky',
       	entries: 0,
       	joined: new Date()
+      }
+	],
+	login: [
+      {
+      	id: '',
+      	hash: '',
+      	email: 'farid@gmail.com'
       }
 	]
 }
@@ -31,6 +39,13 @@ app.get('/',(req,res)=>{
 })
 
 app.post('/signin',(req,res)=>{
+	// Load hash from your password DB.
+bcrypt.compare("nana1978", "$2b$10$.2spfgdacCEeqzWbFihdVeaWbPe2IyjJos4KxqIxx8DX1oKPpFlZa", function(err, result) {
+    console.log('first guess',result)
+});
+bcrypt.compare("veggies", "$2b$10$.2spfgdacCEeqzWbFihdVeaWbPe2IyjJos4KxqIxx8DX1oKPpFlZa", function(err, result) {
+    console.log('Second guess',result)
+});
 	if(req.body.email === database.users[0].email && req.body.password === database.users[0].password)
 	{
 		res.json('success');
@@ -41,6 +56,10 @@ app.post('/signin',(req,res)=>{
 
 app.post('/register',(req,res)=>{
 	const {name,email,password} = req.body;
+    bcrypt.hash(password, saltRounds, function(err, hash) {
+    console.log(hash);
+   });
+
 	database.users.push(
 	{
       	id: '125',
@@ -84,6 +103,19 @@ app.post('/image',(req,res)=>{
 		res.status(404).json('No found')
 	}
 })
+
+
+// bcrypt.hash("bacon", null, null, function(err, hash) {
+//     // Store hash in your password DB.
+// });
+
+// // Load hash from your password DB.
+// bcrypt.compare("bacon", hash, function(err, res) {
+//     // res == true
+// });
+// bcrypt.compare("veggies", hash, function(err, res) {
+//     // res = false
+// });
 
 app.listen(3000,()=>{
 	console.log('app is running on port 3000')
