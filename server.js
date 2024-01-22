@@ -1,19 +1,20 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-
 import bcrypt from 'bcrypt';
+import cors from 'cors'
 const saltRounds = 10;
 
 const app = express()
 
 app.use(bodyParser.json());
-
+app.use(cors());
 const database = {
 	users : [
       {
       	id: '123',
       	name: 'farid',
       	email: 'farid@gmail.com',
+      	password: 'bass1971',
       	entries: 0,
       	joined: new Date()
       },
@@ -21,6 +22,7 @@ const database = {
       	id: '124',
       	name: 'Top G',
       	email: 'topg@gmail.com',
+      	password: 'nana1978',
       	entries: 0,
       	joined: new Date()
       }
