@@ -8,6 +8,7 @@ const app = express()
 
 app.use(bodyParser.json());
 app.use(cors());
+
 const database = {
 	users : [
       {
@@ -58,16 +59,16 @@ bcrypt.compare("veggies", "$2b$10$.2spfgdacCEeqzWbFihdVeaWbPe2IyjJos4KxqIxx8DX1o
 
 app.post('/register',(req,res)=>{
 	const {name,email,password} = req.body;
-    bcrypt.hash(password, saltRounds, function(err, hash) {
-    console.log(hash);
-   });
+   //  bcrypt.hash(password, saltRounds, function(err, hash) {
+   //  console.log(hash);
+   // });
 
 	database.users.push(
 	{
       	id: '125',
       	name: name,
       	email: email,
-      	password: password,
+      	//password: password,
       	entries: 0,
       	joined: new Date()
 	})
