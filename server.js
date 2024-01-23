@@ -43,15 +43,15 @@ app.get('/',(req,res)=>{
 
 app.post('/signin',(req,res)=>{
 	// Load hash from your password DB.
-bcrypt.compare("nana1978", "$2b$10$.2spfgdacCEeqzWbFihdVeaWbPe2IyjJos4KxqIxx8DX1oKPpFlZa", function(err, result) {
-    console.log('first guess',result)
-});
-bcrypt.compare("veggies", "$2b$10$.2spfgdacCEeqzWbFihdVeaWbPe2IyjJos4KxqIxx8DX1oKPpFlZa", function(err, result) {
-    console.log('Second guess',result)
-});
+// bcrypt.compare("nana1978", "$2b$10$.2spfgdacCEeqzWbFihdVeaWbPe2IyjJos4KxqIxx8DX1oKPpFlZa", function(err, result) {
+//     console.log('first guess',result)
+// });
+// bcrypt.compare("veggies", "$2b$10$.2spfgdacCEeqzWbFihdVeaWbPe2IyjJos4KxqIxx8DX1oKPpFlZa", function(err, result) {
+//     console.log('Second guess',result)
+// });
 	if(req.body.email === database.users[0].email && req.body.password === database.users[0].password)
 	{
-		res.json('success');
+		res.json(database.users[0]);
 	} else {
 		res.status(400).json('error logging in');
 	}
