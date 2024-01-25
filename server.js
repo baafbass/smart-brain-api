@@ -1,8 +1,23 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
-import cors from 'cors'
+import cors from 'cors';
+import knex from 'knex';
+
 const saltRounds = 10;
+
+const db = knex({
+	client: 'pg',
+	connection:{
+		host: '127.0.0.1',
+		user: 'postgres',
+		port: '3001',
+		password:'BAAF-BASS',
+		database: 'smartBDB'
+	}
+})
+
+console.log(db.select('*').from('users'));
 
 const app = express()
 
