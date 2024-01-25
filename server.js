@@ -11,13 +11,15 @@ const db = knex({
 	connection:{
 		host: '127.0.0.1',
 		user: 'postgres',
-		port: '3001',
+		port: '5432',
 		password:'BAAF-BASS',
 		database: 'smartBDB'
 	}
 })
 
-console.log(db.select('*').from('users'));
+db.select('*').from('users').then(data => {
+	console.log(data);
+});
 
 const app = express()
 
@@ -78,15 +80,11 @@ app.post('/register',(req,res)=>{
    //  console.log(hash);
    // });
 
-	database.users.push(
-	{
-      	id: '125',
-      	name: name,
-      	email: email,
-      	//password: password,
-      	entries: 0,
-      	joined: new Date()
-	})
+db('users').insert({
+	email: email,
+	name: name,
+	joined : new Date()
+}).then(console.log);
 	res.json(database.users[database.users.length-1]);
 })
 
