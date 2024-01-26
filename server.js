@@ -26,68 +26,57 @@ const app = express()
 app.use(bodyParser.json());
 app.use(cors());
 
-const database = {
-	users : [
-      {
-      	id: '123',
-      	name: 'farid',
-      	email: 'farid@gmail.com',
-      	password: 'bass1971',
-      	entries: 0,
-      	joined: new Date()
-      },
-      {
-      	id: '124',
-      	name: 'Top G',
-      	email: 'topg@gmail.com',
-      	password: 'nana1978',
-      	entries: 0,
-      	joined: new Date()
-      }
-	],
-	login: [
-      {
-      	id: '',
-      	hash: '',
-      	email: 'farid@gmail.com'
-      }
-	]
-}
-
 app.get('/',(req,res)=>{
-	res.json(database.users);
+	res.send('success');
 })
 
 app.post('/signin',(req,res)=>{
-	// Load hash from your password DB.
-// bcrypt.compare("nana1978", "$2b$10$.2spfgdacCEeqzWbFihdVeaWbPe2IyjJos4KxqIxx8DX1oKPpFlZa", function(err, result) {
-//     console.log('first guess',result)
-// });
-// bcrypt.compare("veggies", "$2b$10$.2spfgdacCEeqzWbFihdVeaWbPe2IyjJos4KxqIxx8DX1oKPpFlZa", function(err, result) {
-//     console.log('Second guess',result)
-// });
-	if(req.body.email === database.users[0].email && req.body.password === database.users[0].password)
+db.select('email','hash').from('login')
+.where('email','=',req.body.email)
+.then(data => {
+	const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
+	console.log(isValid);
+	if(isValid)
 	{
-		res.json(database.users[0]);
-	} else {
-		res.status(400).json('error logging in');
-	}
+		return db.select('*').from('users')
+		.where('email','=',req.body.email)
+		.then(user =>{
+			console.log(user);
+			res.json(user[0]);
+		})
+		.catch(err => res.status(400).json('unable to get user'));
+	}else
+	{
+		res.status(400).json('Wrong Credentials')
+	} 
+})
+.catch(err => res.status(400).json('Wrong Credentials'))
 })
 
 app.post('/register',(req,res)=>{
 	const {name,email,password} = req.body;
-   //  bcrypt.hash(password, saltRounds, function(err, hash) {
-   //  console.log(hash);
-   // });
+const hash = bcrypt.hashSync(password, saltRounds);
 
-db('users')
-.returning('*')
-.insert({
-	email: email,
+db.transaction(trx => {
+	trx.insert({
+		hash: hash,
+		email: email
+	})
+	.into('login')
+	.returning('email')
+	.then(loginEmail =>{
+        trx('users')
+    .returning('*')
+    .insert({
+	email: loginEmail[0].email,
 	name: name,
 	joined : new Date()
 }).then(user => {
 	res.json(user[0]);
+})
+	})
+	.then(trx.commit)
+	.then(trx.rollback)
 })
 .catch(err => res.status(400).json('unable to register'))
 })
@@ -116,19 +105,6 @@ db('users').where('id','=',id)
 })
 .catch(err => res.status(400).json('unable to get entries'));
 })
-
-
-// bcrypt.hash("bacon", null, null, function(err, hash) {
-//     // Store hash in your password DB.
-// });
-
-// // Load hash from your password DB.
-// bcrypt.compare("bacon", hash, function(err, res) {
-//     // res == true
-// });
-// bcrypt.compare("veggies", hash, function(err, res) {
-//     // res = false
-// });
 
 app.listen(3000,()=>{
 	console.log('app is running on port 3000')
