@@ -1,4 +1,3 @@
-
 const returnsetupClarifaiRequestOptions = (imageURL) =>{
     const PAT = 'f2e9e5cd97cf46edabb328d372ecabcd';
     const USER_ID = 'baafbass';       
