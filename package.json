@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
+    "postinstall": "npm rebuild bcrypt --build-from-source",
     "start:dev": "nodemon server.js"
   },
   "keywords": [],
