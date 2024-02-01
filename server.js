@@ -1,6 +1,6 @@
 	import express from 'express';
 	import bodyParser from 'body-parser';
-	import bcrypt from 'bcrypt';
+	import bcrypt from 'bcryptjs';
 	import cors from 'cors';
 	import knex from 'knex';
 	import {handleRegister} from './controllers/register.js';
